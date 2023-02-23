@@ -30,8 +30,7 @@ jobs:
 
       - name: Debug
         run: |
-          echo '${{ toJson(github) }}' > githubcontext.json
-          cat githubcontext.json
+          echo ${{ toJson(github) }}
       - name: Set package version by tag
         run: echo "PACKAGE_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
         if: github.ref_type == 'tag'
