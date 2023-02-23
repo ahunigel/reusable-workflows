@@ -28,9 +28,6 @@ jobs:
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-      - name: Debug
-        run: |
-          echo ${{ toJson(github) }}
       - name: Set package version by tag
         run: echo "PACKAGE_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
         if: github.ref_type == 'tag'
