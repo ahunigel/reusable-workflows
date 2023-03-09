@@ -40,7 +40,7 @@ jobs:
       - name: printenv
         run: printenv
       - name: print githubenv
-        run: echo $GITHUB_ENV
+        run: cat $GITHUB_ENV
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
@@ -53,5 +53,5 @@ jobs:
         with:
           arguments: publish -Pversion=${{ env.PACKAGE_VERSION }}
         env:
-          USERNAME: Github Action
+          USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
