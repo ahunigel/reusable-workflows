@@ -49,5 +49,5 @@ jobs:
         with:
           arguments: publish -Pversion=${{ env.PACKAGE_VERSION }}
         env:
-          USERNAME: ${{ github.actor }}
-          #TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #USERNAME: ${{ github.actor }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
