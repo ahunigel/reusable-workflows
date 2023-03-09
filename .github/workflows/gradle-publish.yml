@@ -38,7 +38,7 @@ jobs:
       - name: Set gradlew executalbe
         run: chmod +x gradlew
       - name: printenv
-        run: rintenv
+        run: printenv
       - name: print githubenv
         run: echo $GITHUB_ENV
       - name: Build with Gradle
