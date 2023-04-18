@@ -35,7 +35,7 @@ jobs:
         run: echo "PACKAGE_VERSION=$(grep "^version=" gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')" >> $GITHUB_ENV
         if: github.ref_type != 'tag'
 
-      - name: Set gradlew executalbe
+      - name: Set gradlew executable
         run: chmod +x gradlew
       - name: printenv
         run: printenv
