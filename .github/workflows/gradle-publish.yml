@@ -42,14 +42,14 @@ jobs:
       - name: print githubenv
         run: cat $GITHUB_ENV
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@40b6781dcdec2762ad36556682ac74e31030cfe2
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25
         with:
           arguments: build
       
       # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
       # the publishing section of your build.gradle
       - name: Publish to GitHub Packages
-        uses: gradle/gradle-build-action@40b6781dcdec2762ad36556682ac74e31030cfe2
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25
         with:
           arguments: publish -Pversion=${{ env.PACKAGE_VERSION }}
         env:
