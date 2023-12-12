@@ -54,6 +54,8 @@ jobs:
             "org.jenkins-ci.tools"
           ]
         # output_file: .m2/settings.xml
+    - name: Check mvn setting
+      run: cat ~/.m2/settings.xml
     - name: Set mvnw executable
       run: chmod +x mvnw
     - name: Build with Maven
