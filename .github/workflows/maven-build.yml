@@ -1,0 +1,93 @@
+# Parameterized Maven build workflow - supports custom JDK versions and Maven commands
+name: Maven Build (Parameterized)
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'JDK version'
+        required: false
+        type: string
+        default: '17'
+      java-distribution:
+        description: 'JDK distribution'
+        required: false
+        type: string
+        default: 'temurin'
+      maven-args:
+        description: 'Maven command arguments'
+        required: false
+        type: string
+        default: '-B package'
+      working-directory:
+        description: 'Working directory'
+        required: false
+        type: string
+        default: '.'
+      upload-artifact:
+        description: 'Whether to upload build artifacts'
+        required: false
+        type: boolean
+        default: false
+      artifact-name:
+        description: 'Artifact name'
+        required: false
+        type: string
+        default: 'build-artifacts'
+      artifact-path:
+        description: 'Artifact path'
+        required: false
+        type: string
+        default: 'target/*.jar'
+      run-tests:
+        description: 'Whether to run tests'
+        required: false
+        type: boolean
+        default: true
+      submit-dependency-graph:
+        description: 'Whether to submit dependency graph'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      
+    - name: Set up JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@v5
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+        cache: maven
+        
+    - name: Set mvnw executable
+      run: chmod +x mvnw
+      working-directory: ${{ inputs.working-directory }}
+      
+    - name: Build with Maven
+      run: |
+        if [ "${{ inputs.run-tests }}" = "true" ]; then
+          mvn ${{ inputs.maven-args }} --file pom.xml
+        else
+          mvn ${{ inputs.maven-args }} -DskipTests --file pom.xml
+        fi
+      working-directory: ${{ inputs.working-directory }}
+      
+    - name: Upload build artifacts
+      if: inputs.upload-artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.working-directory }}/${{ inputs.artifact-path }}
+        retention-days: 7
+        
+    - name: Update dependency graph
+      if: inputs.submit-dependency-graph
+      uses: advanced-security/maven-dependency-submission-action@v5.0.0
+      with:
+        directory: ${{ inputs.working-directory }}

@@ -1,0 +1,73 @@
+# Maven test with report generation
+name: Maven Test with Report
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'JDK version'
+        required: false
+        type: string
+        default: '17'
+      java-distribution:
+        description: 'JDK distribution'
+        required: false
+        type: string
+        default: 'temurin'
+      working-directory:
+        description: 'Working directory'
+        required: false
+        type: string
+        default: '.'
+      maven-args:
+        description: 'Additional Maven arguments'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      
+    - name: Set up JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@v5
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+        cache: maven
+        
+    - name: Set mvnw executable
+      run: chmod +x mvnw
+      working-directory: ${{ inputs.working-directory }}
+      
+    - name: Run tests with Maven
+      run: mvn -B test ${{ inputs.maven-args }} --file pom.xml
+      working-directory: ${{ inputs.working-directory }}
+      
+    - name: Publish test results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: |
+          ${{ inputs.working-directory }}/target/surefire-reports/*.xml
+          ${{ inputs.working-directory }}/target/failsafe-reports/*.xml
+        check_name: Test Results (JDK ${{ inputs.java-version }})
+        
+    - name: Upload test reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-reports-jdk${{ inputs.java-version }}
+        path: |
+          ${{ inputs.working-directory }}/target/surefire-reports/
+          ${{ inputs.working-directory }}/target/failsafe-reports/
+        retention-days: 7

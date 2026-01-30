@@ -1,0 +1,97 @@
+# Security scan workflow - checks dependency vulnerabilities and security issues
+name: Security Scan
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'JDK version'
+        required: false
+        type: string
+        default: '17'
+      java-distribution:
+        description: 'JDK distribution'
+        required: false
+        type: string
+        default: 'temurin'
+      build-tool:
+        description: 'Build tool (maven or gradle)'
+        required: false
+        type: string
+        default: 'maven'
+      working-directory:
+        description: 'Working directory'
+        required: false
+        type: string
+        default: '.'
+      fail-on-severity:
+        description: 'Failure level (LOW, MODERATE, HIGH, CRITICAL)'
+        required: false
+        type: string
+        default: 'HIGH'
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      
+    - name: Set up JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@v5
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+        cache: ${{ inputs.build-tool }}
+        
+    # OWASP Dependency Check for Maven
+    - name: OWASP Dependency Check (Maven)
+      if: inputs.build-tool == 'maven'
+      run: |
+        chmod +x mvnw
+        ./mvnw -B dependency-check:check -Dformat=ALL
+      working-directory: ${{ inputs.working-directory }}
+      continue-on-error: true
+      
+    # OWASP Dependency Check for Gradle
+    - name: OWASP Dependency Check (Gradle)
+      if: inputs.build-tool == 'gradle'
+      run: |
+        chmod +x gradlew
+        ./gradlew dependencyCheckAnalyze
+      working-directory: ${{ inputs.working-directory }}
+      continue-on-error: true
+      
+    # Trivy vulnerability scanner
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        scan-type: 'fs'
+        scan-ref: ${{ inputs.working-directory }}
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: ${{ inputs.fail-on-severity }}
+        
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+        
+    # Upload security reports
+    - name: Upload security reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-reports
+        path: |
+          ${{ inputs.working-directory }}/target/dependency-check-report.*
+          ${{ inputs.working-directory }}/build/reports/dependency-check/
+          trivy-results.sarif
+        retention-days: 30

@@ -1,0 +1,135 @@
+# Code quality check workflow - includes code coverage, static analysis, etc.
+name: Code Quality Check
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'JDK version'
+        required: false
+        type: string
+        default: '17'
+      java-distribution:
+        description: 'JDK distribution'
+        required: false
+        type: string
+        default: 'temurin'
+      build-tool:
+        description: 'Build tool (maven or gradle)'
+        required: false
+        type: string
+        default: 'maven'
+      working-directory:
+        description: 'Working directory'
+        required: false
+        type: string
+        default: '.'
+      min-coverage:
+        description: 'Minimum code coverage percentage'
+        required: false
+        type: number
+        default: 80
+      enable-spotbugs:
+        description: 'Enable SpotBugs static analysis'
+        required: false
+        type: boolean
+        default: true
+      enable-checkstyle:
+        description: 'Enable Checkstyle code style checks'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      
+    - name: Set up JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@v5
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+        cache: ${{ inputs.build-tool }}
+        
+    # Maven build and code coverage
+    - name: Run Maven tests with coverage
+      if: inputs.build-tool == 'maven'
+      run: |
+        chmod +x mvnw
+        ./mvnw -B test jacoco:report
+      working-directory: ${{ inputs.working-directory }}
+      
+    # Gradle build and code coverage
+    - name: Run Gradle tests with coverage
+      if: inputs.build-tool == 'gradle'
+      run: |
+        chmod +x gradlew
+        ./gradlew test jacocoTestReport
+      working-directory: ${{ inputs.working-directory }}
+      
+    # Upload code coverage to Codecov
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        files: ${{ inputs.working-directory }}/target/site/jacoco/jacoco.xml,${{ inputs.working-directory }}/build/reports/jacoco/test/jacocoTestReport.xml
+        fail_ci_if_error: false
+        verbose: true
+        
+    # JaCoCo Coverage Report
+    - name: Add coverage to PR
+      uses: madrapps/jacoco-report@v1.7.1
+      if: github.event_name == 'pull_request'
+      with:
+        paths: |
+          ${{ inputs.working-directory }}/target/site/jacoco/jacoco.xml
+          ${{ inputs.working-directory }}/build/reports/jacoco/test/jacocoTestReport.xml
+        token: ${{ secrets.GITHUB_TOKEN }}
+        min-coverage-overall: ${{ inputs.min-coverage }}
+        min-coverage-changed-files: ${{ inputs.min-coverage }}
+        
+    # SpotBugs static analysis (Maven)
+    - name: Run SpotBugs (Maven)
+      if: inputs.enable-spotbugs && inputs.build-tool == 'maven'
+      run: ./mvnw -B spotbugs:check
+      working-directory: ${{ inputs.working-directory }}
+      continue-on-error: true
+      
+    # Checkstyle code style check (Maven)
+    - name: Run Checkstyle (Maven)
+      if: inputs.enable-checkstyle && inputs.build-tool == 'maven'
+      run: ./mvnw -B checkstyle:check
+      working-directory: ${{ inputs.working-directory }}
+      continue-on-error: true
+      
+    # SpotBugs static analysis (Gradle)
+    - name: Run SpotBugs (Gradle)
+      if: inputs.enable-spotbugs && inputs.build-tool == 'gradle'
+      run: ./gradlew spotbugsMain
+      working-directory: ${{ inputs.working-directory }}
+      continue-on-error: true
+      
+    # Checkstyle code style check (Gradle)
+    - name: Run Checkstyle (Gradle)
+      if: inputs.enable-checkstyle && inputs.build-tool == 'gradle'
+      run: ./gradlew checkstyleMain
+      working-directory: ${{ inputs.working-directory }}
+      continue-on-error: true
+      
+    - name: Upload quality reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: quality-reports
+        path: |
+          ${{ inputs.working-directory }}/target/site/
+          ${{ inputs.working-directory }}/build/reports/
+        retention-days: 7

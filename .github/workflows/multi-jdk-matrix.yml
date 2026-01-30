@@ -1,0 +1,73 @@
+# Multi-JDK version matrix test - test compatibility on multiple JDK versions
+name: Multi-JDK Matrix Test
+
+on:
+  workflow_call:
+    inputs:
+      build-tool:
+        description: 'Build tool (maven or gradle)'
+        required: false
+        type: string
+        default: 'maven'
+      working-directory:
+        description: 'Working directory'
+        required: false
+        type: string
+        default: '.'
+      jdk-versions:
+        description: 'JDK version list (JSON array)'
+        required: false
+        type: string
+        default: '["11", "17", "21"]'
+      java-distribution:
+        description: 'JDK distribution'
+        required: false
+        type: string
+        default: 'temurin'
+
+jobs:
+  matrix-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version: ${{ fromJSON(inputs.jdk-versions) }}
+        
+    name: Test on JDK ${{ matrix.java-version }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      
+    - name: Set up JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v5
+      with:
+        java-version: ${{ matrix.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+        cache: ${{ inputs.build-tool }}
+        
+    # Maven build
+    - name: Build with Maven
+      if: inputs.build-tool == 'maven'
+      run: |
+        chmod +x mvnw
+        ./mvnw -B clean verify
+      working-directory: ${{ inputs.working-directory }}
+      
+    # Gradle build
+    - name: Build with Gradle
+      if: inputs.build-tool == 'gradle'
+      uses: gradle/gradle-build-action@v3
+      with:
+        arguments: clean build
+        build-root-directory: ${{ inputs.working-directory }}
+        
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-jdk${{ matrix.java-version }}
+        path: |
+          ${{ inputs.working-directory }}/target/surefire-reports/
+          ${{ inputs.working-directory }}/build/test-results/
+        retention-days: 7

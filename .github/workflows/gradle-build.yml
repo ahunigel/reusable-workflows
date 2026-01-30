@@ -1,0 +1,89 @@
+# Parameterized Gradle build workflow - supports custom JDK versions and Gradle tasks
+name: Gradle Build (Parameterized)
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'JDK version'
+        required: false
+        type: string
+        default: '17'
+      java-distribution:
+        description: 'JDK distribution'
+        required: false
+        type: string
+        default: 'temurin'
+      gradle-tasks:
+        description: 'Gradle tasks'
+        required: false
+        type: string
+        default: 'build'
+      working-directory:
+        description: 'Working directory'
+        required: false
+        type: string
+        default: '.'
+      upload-artifact:
+        description: 'Whether to upload build artifacts'
+        required: false
+        type: boolean
+        default: false
+      artifact-name:
+        description: 'Artifact name'
+        required: false
+        type: string
+        default: 'build-artifacts'
+      artifact-path:
+        description: 'Artifact path'
+        required: false
+        type: string
+        default: 'build/libs/*.jar'
+      run-tests:
+        description: 'Whether to run tests'
+        required: false
+        type: boolean
+        default: true
+      generate-dependency-graph:
+        description: 'Whether to generate dependency graph'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      
+    - name: Set up JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@v5
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+        
+    - name: Set gradlew executable
+      run: chmod +x gradlew
+      working-directory: ${{ inputs.working-directory }}
+      
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@v3
+      with:
+        arguments: |
+          ${{ inputs.gradle-tasks }}
+          ${{ inputs.run-tests == false && '-x test' || '' }}
+        build-root-directory: ${{ inputs.working-directory }}
+        dependency-graph: ${{ inputs.generate-dependency-graph && 'generate-and-submit' || 'disabled' }}
+        
+    - name: Upload build artifacts
+      if: inputs.upload-artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.working-directory }}/${{ inputs.artifact-path }}
+        retention-days: 7
