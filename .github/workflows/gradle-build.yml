@@ -86,7 +86,7 @@ jobs:
       working-directory: ${{ inputs.working-directory }}
         
     - name: Upload build artifacts
-      if: inputs.upload-artifact
+      if: failure() && inputs.upload-artifact
       uses: actions/upload-artifact@v6
       with:
         name: ${{ inputs.artifact-name }}

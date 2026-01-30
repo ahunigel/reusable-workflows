@@ -1,0 +1,80 @@
+# This workflow will build a Jenkins plugin with Maven and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+name: Jenkins plugin with Maven
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'Java version to use'
+        required: false
+        default: '17'
+        type: string
+      maven-args:
+        description: 'Additional Maven arguments'
+        required: false
+        default: '-B package --file pom.xml'
+        type: string
+      submit-dependency-graph:
+        description: 'Submit dependency graph to GitHub'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+    
+    - name: Set up JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@v5
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: 'temurin'
+        cache: maven
+        
+    - name: Configure Maven settings for Jenkins
+      uses: whelk-io/maven-settings-xml-action@v22
+      with:
+        repositories: >
+          [
+            {
+              "id": "repo.jenkins-ci.org",
+              "url": "https://repo.jenkins-ci.org/public/"
+            }
+          ]
+        plugin_repositories: >
+          [
+            {
+              "id": "repo.jenkins-ci.org",
+              "url": "https://repo.jenkins-ci.org/public/"
+            }
+          ]
+        mirrors: >
+          [
+            {
+              "id": "repo.jenkins-ci.org",
+              "mirrorOf": "m.g.o-public",
+              "url": "https://repo.jenkins-ci.org/public/"
+            }
+          ]
+        plugin_groups: >
+          [
+            "org.jenkins-ci.tools"
+          ]
+          
+    - name: Check Maven settings
+      run: cat ~/.m2/settings.xml
+      
+    - name: Set mvnw executable
+      run: chmod +x mvnw
+      
+    - name: Build with Maven
+      run: mvn ${{ inputs.maven-args }}
+
+    - name: Update dependency graph
+      if: inputs.submit-dependency-graph
+      uses: advanced-security/maven-dependency-submission-action@v5.0.0
