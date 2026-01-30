@@ -1,0 +1,101 @@
+# Parameterized Gradle publish workflow - supports custom JDK versions and publishing to GitHub Packages
+name: Gradle Publish (Parameterized)
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'JDK version'
+        required: false
+        type: string
+        default: '17'
+      java-distribution:
+        description: 'JDK distribution'
+        required: false
+        type: string
+        default: 'temurin'
+      gradle-tasks:
+        description: 'Gradle build tasks (before publish)'
+        required: false
+        type: string
+        default: 'build'
+      publish-task:
+        description: 'Gradle publish task'
+        required: false
+        type: string
+        default: 'publish'
+      working-directory:
+        description: 'Working directory'
+        required: false
+        type: string
+        default: '.'
+      version-from-tag:
+        description: 'Whether to use git tag as version'
+        required: false
+        type: boolean
+        default: true
+      version-property:
+        description: 'Property file to read version from (if not using tag)'
+        required: false
+        type: string
+        default: 'gradle.properties'
+      debug-env:
+        description: 'Whether to print environment variables for debugging'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      
+    - name: Set up JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@v5
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+        server-id: github
+        settings-path: ${{ github.workspace }}
+
+    - name: Set package version from tag
+      if: github.ref_type == 'tag' && inputs.version-from-tag
+      run: echo "PACKAGE_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+      
+    - name: Set package version from property file
+      if: github.ref_type != 'tag' || !inputs.version-from-tag
+      run: echo "PACKAGE_VERSION=$(grep "^version=" ${{ inputs.version-property }} | cut -d'=' -f2 | tr -d '[:space:]')" >> $GITHUB_ENV
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+      
+    - name: Set gradlew executable
+      run: chmod +x gradlew
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Debug environment
+      if: inputs.debug-env
+      run: |
+        echo "=== Environment Variables ==="
+        printenv
+        echo "=== GitHub Environment ==="
+        cat $GITHUB_ENV
+      
+    - name: Build with Gradle
+      run: ./gradlew ${{ inputs.gradle-tasks }}
+      working-directory: ${{ inputs.working-directory }}
+      
+    - name: Publish to GitHub Packages
+      run: ./gradlew ${{ inputs.publish-task }} -Pversion=${{ env.PACKAGE_VERSION }}
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        USERNAME: ${{ github.actor }}
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}

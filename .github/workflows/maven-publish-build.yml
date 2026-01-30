@@ -1,0 +1,70 @@
+# Parameterized Maven publish workflow - supports custom JDK versions and publishing to GitHub Packages
+name: Maven Publish (Parameterized)
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'JDK version'
+        required: false
+        type: string
+        default: '17'
+      java-distribution:
+        description: 'JDK distribution'
+        required: false
+        type: string
+        default: 'temurin'
+      maven-build-args:
+        description: 'Maven build arguments'
+        required: false
+        type: string
+        default: '-B package --file pom.xml'
+      maven-deploy-args:
+        description: 'Maven deploy arguments'
+        required: false
+        type: string
+        default: 'deploy'
+      working-directory:
+        description: 'Working directory'
+        required: false
+        type: string
+        default: '.'
+      server-id:
+        description: 'Maven server ID'
+        required: false
+        type: string
+        default: 'github'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      
+    - name: Set up JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@v5
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+        server-id: ${{ inputs.server-id }}
+        settings-path: ${{ github.workspace }}
+
+    - name: Set mvnw executable
+      run: chmod +x mvnw
+      working-directory: ${{ inputs.working-directory }}
+      
+    - name: Build with Maven
+      run: mvn ${{ inputs.maven-build-args }}
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Publish to GitHub Packages
+      run: mvn ${{ inputs.maven-deploy-args }} -s $GITHUB_WORKSPACE/settings.xml
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
