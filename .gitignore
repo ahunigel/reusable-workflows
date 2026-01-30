@@ -1,0 +1,27 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+
+# Build outputs (if any test projects are added)
+target/
+build/
+dist/
+*.class
+*.jar
+*.war
