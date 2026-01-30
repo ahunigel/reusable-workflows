@@ -2,6 +2,8 @@
 
 This guide helps you get started with reusable-workflows quickly.
 
+> **Important**: Replace `your-org/reusable-workflows` with your actual repository path and ensure version tags are created (see README Setup Instructions).
+
 ## 🚀 5-Minute Quick Start
 
 ### Step 1: Choose the Right Workflow

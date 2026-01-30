@@ -19,6 +19,8 @@ A collection of reusable GitHub Actions workflows for Java projects CI/CD pipeli
 
 ## 🚀 Quick Start
 
+> **Note**: Before using these workflows, create a version tag (see [Setup Instructions](#setup-instructions) below).
+
 ```yaml
 # Create .github/workflows/ci.yml in your project
 name: CI
@@ -31,6 +33,8 @@ jobs:
     with:
       java-version: '17'
 ```
+
+Replace `your-org/reusable-workflows` with your actual repository path.
 
 See the [Quick Start Guide](QUICKSTART.md) for more details.
 
@@ -188,6 +192,36 @@ The repository is configured with Dependabot to automatically update GitHub Acti
 
 Issues and Pull Requests are welcome to improve these workflows!
 
-## 📄 License
+## � Setup Instructions
+
+### For Repository Maintainers
+
+After setting up this repository, create version tags:
+
+```bash
+# Create and push version tags
+git tag v1.0.0
+git tag v1
+git push origin v1.0.0
+git push origin v1
+```
+
+**Tag Strategy:**
+- `v1.0.0` - Exact version (never moves)
+- `v1` - Major version tag (update this when releasing new patches: `git tag -f v1 && git push -f origin v1`)
+
+### For Users
+
+Reference workflows using version tags:
+
+```yaml
+# Recommended: Use major version tag (gets latest patches automatically)
+uses: your-org/reusable-workflows/.github/workflows/maven-build.yml@v1
+
+# Or: Use exact version (never changes)
+uses: your-org/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
+```
+
+## �📄 License
 
 Please add an appropriate license file based on your needs.
