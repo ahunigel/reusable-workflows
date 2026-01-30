@@ -148,14 +148,14 @@ More flexible, configurable workflows:
 ```yaml
 jobs:
   build:
-    uses: your-org/reusable-workflows/.github/workflows/maven-hpi-jdk17.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/maven-hpi-jdk17.yml@v1
 ```
 
 **After (maven-build.yml):**
 ```yaml
 jobs:
   build:
-    uses: your-org/reusable-workflows/.github/workflows/maven-build.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
     with:
       java-version: '17'
       maven-args: '-B package'
@@ -172,13 +172,13 @@ jobs:
 ### Simple Projects
 Use existing fixed-version workflows:
 ```yaml
-uses: your-org/reusable-workflows/.github/workflows/maven-jdk17.yml@v1
+uses: nigeland/reusable-workflows/.github/workflows/maven-jdk17.yml@v1
 ```
 
 ### Projects Needing Flexible Configuration
 Use new parameterized workflows:
 ```yaml
-uses: your-org/reusable-workflows/.github/workflows/maven-build.yml@v1
+uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
 with:
   java-version: '17'
   upload-artifact: true

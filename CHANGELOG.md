@@ -114,13 +114,13 @@ Initial release with comprehensive workflow collection and complete documentatio
 #### For New Projects
 Use the new parameterized workflows for maximum flexibility:
 ```yaml
-uses: your-org/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
+uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
 ```
 
 #### For Existing Projects
 Continue using existing workflows without any modifications:
 ```yaml
-uses: your-org/reusable-workflows/.github/workflows/maven-jdk17.yml@v1.0.0
+uses: nigeland/reusable-workflows/.github/workflows/maven-jdk17.yml@v1.0.0
 ```
 
 #### Recommended Upgrade Path
@@ -131,8 +131,8 @@ uses: your-org/reusable-workflows/.github/workflows/maven-jdk17.yml@v1.0.0
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/your-org/reusable-workflows/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/reusable-workflows/discussions)
+- **Issues**: [GitHub Issues](https://github.com/nigeland/reusable-workflows/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/nigeland/reusable-workflows/discussions)
 - **Documentation**: [README.md](README.md), [EXAMPLES.md](EXAMPLES.md)
 
 ## License

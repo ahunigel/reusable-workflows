@@ -2,7 +2,7 @@
 
 [![GitHub Actions](https://img.shields.io/badge/GitHub-Actions-2088FF?logo=github-actions&logoColor=white)](https://github.com/features/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Maintained](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/your-org/reusable-workflows/graphs/commit-activity)
+[![Maintained](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/nigeland/reusable-workflows/graphs/commit-activity)
 
 A collection of reusable GitHub Actions workflows for Java projects CI/CD pipelines.
 
@@ -29,12 +29,12 @@ on: [push, pull_request]
 
 jobs:
   build:
-    uses: your-org/reusable-workflows/.github/workflows/maven-build.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
     with:
       java-version: '17'
 ```
 
-Replace `your-org/reusable-workflows` with your actual repository path.
+Replace `nigeland/reusable-workflows` with your actual repository path.
 
 See the [Quick Start Guide](QUICKSTART.md) for more details.
 
@@ -216,10 +216,10 @@ Reference workflows using version tags:
 
 ```yaml
 # Recommended: Use major version tag (gets latest patches automatically)
-uses: your-org/reusable-workflows/.github/workflows/maven-build.yml@v1
+uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
 
 # Or: Use exact version (never changes)
-uses: your-org/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
+uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
 ```
 
 ## �📄 License

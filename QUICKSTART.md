@@ -2,7 +2,7 @@
 
 This guide helps you get started with reusable-workflows quickly.
 
-> **Important**: Replace `your-org/reusable-workflows` with your actual repository path and ensure version tags are created (see README Setup Instructions).
+> **Important**: Replace `nigeland/reusable-workflows` with your actual repository path and ensure version tags are created (see README Setup Instructions).
 
 ## 🚀 5-Minute Quick Start
 
@@ -44,7 +44,7 @@ on:
 
 jobs:
   build:
-    uses: your-org/reusable-workflows/.github/workflows/maven-build.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
     with:
       java-version: '17'
 ```
@@ -58,7 +58,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    uses: your-org/reusable-workflows/.github/workflows/maven-build.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
     with:
       java-version: '17'
       upload-artifact: true
@@ -81,7 +81,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    uses: your-org/reusable-workflows/.github/workflows/gradle-build.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/gradle-build.yml@v1
     with:
       java-version: '17'
 ```
@@ -95,7 +95,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    uses: your-org/reusable-workflows/.github/workflows/gradle-build.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/gradle-build.yml@v1
     with:
       java-version: '21'
       gradle-tasks: 'clean build'
@@ -117,13 +117,13 @@ on: [push, pull_request]
 
 jobs:
   build-jdk11:
-    uses: your-org/reusable-workflows/.github/workflows/maven-hpi-jdk11.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/maven-hpi-jdk11.yml@v1
     
   build-jdk17:
-    uses: your-org/reusable-workflows/.github/workflows/maven-hpi-jdk17.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/maven-hpi-jdk17.yml@v1
     
   build-jdk21:
-    uses: your-org/reusable-workflows/.github/workflows/maven-hpi-jdk21.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/maven-hpi-jdk21.yml@v1
 ```
 
 ---
@@ -145,20 +145,20 @@ on:
 jobs:
   # Build
   build:
-    uses: your-org/reusable-workflows/.github/workflows/maven-build.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
     with:
       java-version: '17'
       upload-artifact: true
   
   # Test Reports
   test:
-    uses: your-org/reusable-workflows/.github/workflows/maven-test-report.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/maven-test-report.yml@v1
     with:
       java-version: '17'
   
   # Code Quality
   quality:
-    uses: your-org/reusable-workflows/.github/workflows/code-quality.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/code-quality.yml@v1
     with:
       java-version: '17'
       build-tool: 'maven'
@@ -166,7 +166,7 @@ jobs:
   
   # Security Scanning
   security:
-    uses: your-org/reusable-workflows/.github/workflows/security-scan.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/security-scan.yml@v1
     with:
       java-version: '17'
       build-tool: 'maven'
@@ -187,7 +187,7 @@ on: pull_request
 
 jobs:
   auto-merge:
-    uses: your-org/reusable-workflows/.github/workflows/dependabot-auto-merge.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/dependabot-auto-merge.yml@v1
 ```
 
 ---
@@ -207,7 +207,7 @@ on:
 
 jobs:
   publish:
-    uses: your-org/reusable-workflows/.github/workflows/maven-publish-jdk17.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/maven-publish-jdk17.yml@v1
 ```
 
 ---
@@ -227,7 +227,7 @@ on:
 
 jobs:
   quality:
-    uses: your-org/reusable-workflows/.github/workflows/code-quality.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/code-quality.yml@v1
     with:
       java-version: '17'
       build-tool: 'maven'
@@ -246,7 +246,7 @@ on:
 
 jobs:
   security:
-    uses: your-org/reusable-workflows/.github/workflows/security-scan.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/security-scan.yml@v1
     with:
       java-version: '17'
       build-tool: 'maven'
@@ -263,7 +263,7 @@ on: [push, pull_request]
 
 jobs:
   matrix-test:
-    uses: your-org/reusable-workflows/.github/workflows/multi-jdk-matrix.yml@v1
+    uses: nigeland/reusable-workflows/.github/workflows/multi-jdk-matrix.yml@v1
     with:
       build-tool: 'maven'
       jdk-versions: '["11", "17", "21"]'
@@ -295,4 +295,4 @@ Congratulations! You've mastered the basics. Next:
 
 ---
 
-**Tip**: Replace `your-org/reusable-workflows` with your actual repository path!
+**Tip**: Replace `nigeland/reusable-workflows` with your actual repository path!
