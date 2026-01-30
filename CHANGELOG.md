@@ -102,7 +102,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
-### v1.0.0 (2026-01-30)
+### v1.0.0
 Initial release with comprehensive workflow collection and complete documentation.
 
 ## Migration Notes
@@ -114,13 +114,13 @@ Initial release with comprehensive workflow collection and complete documentatio
 #### For New Projects
 Use the new parameterized workflows for maximum flexibility:
 ```yaml
-uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
+uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
 ```
 
 #### For Existing Projects
 Continue using existing workflows without any modifications:
 ```yaml
-uses: nigeland/reusable-workflows/.github/workflows/maven-jdk17.yml@v1.0.0
+uses: ahunigel/reusable-workflows/.github/workflows/maven-jdk17.yml@v1.0.0
 ```
 
 #### Recommended Upgrade Path
@@ -131,8 +131,8 @@ uses: nigeland/reusable-workflows/.github/workflows/maven-jdk17.yml@v1.0.0
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/nigeland/reusable-workflows/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/nigeland/reusable-workflows/discussions)
+- **Issues**: [GitHub Issues](https://github.com/ahunigel/reusable-workflows/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ahunigel/reusable-workflows/discussions)
 - **Documentation**: [README.md](README.md), [EXAMPLES.md](EXAMPLES.md)
 
 ## License

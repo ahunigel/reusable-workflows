@@ -27,7 +27,7 @@ on:
 
 jobs:
   build:
-    uses: nigeland/reusable-workflows/.github/workflows/maven.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven.yml@v1
 ```
 
 ### Gradle Build with Fixed JDK Version
@@ -39,7 +39,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    uses: nigeland/reusable-workflows/.github/workflows/gradle-jdk17.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/gradle-jdk17.yml@v1
 ```
 
 ## Parameterized Builds
@@ -53,7 +53,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@v1
     with:
       java-version: '17'
       java-distribution: 'temurin'
@@ -75,7 +75,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    uses: nigeland/reusable-workflows/.github/workflows/gradle-build.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/gradle-build.yml@v1
     with:
       java-version: '21'
       gradle-tasks: 'clean build'
@@ -96,7 +96,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    uses: nigeland/reusable-workflows/.github/workflows/maven-test-report.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-test-report.yml@v1
     with:
       java-version: '17'
       working-directory: '.'
@@ -116,7 +116,7 @@ on:
 
 jobs:
   quality:
-    uses: nigeland/reusable-workflows/.github/workflows/code-quality.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/code-quality.yml@v1
     with:
       java-version: '17'
       build-tool: 'maven'
@@ -136,7 +136,7 @@ on:
 
 jobs:
   quality:
-    uses: nigeland/reusable-workflows/.github/workflows/code-quality.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/code-quality.yml@v1
     with:
       java-version: '21'
       build-tool: 'gradle'
@@ -160,7 +160,7 @@ on:
 
 jobs:
   security:
-    uses: nigeland/reusable-workflows/.github/workflows/security-scan.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/security-scan.yml@v1
     with:
       java-version: '17'
       build-tool: 'maven'
@@ -178,7 +178,7 @@ on:
 
 jobs:
   security-check:
-    uses: nigeland/reusable-workflows/.github/workflows/security-scan.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/security-scan.yml@v1
     with:
       build-tool: 'gradle'
       fail-on-severity: 'HIGH'
@@ -199,7 +199,7 @@ on:
 
 jobs:
   matrix-test:
-    uses: nigeland/reusable-workflows/.github/workflows/multi-jdk-matrix.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/multi-jdk-matrix.yml@v1
     with:
       build-tool: 'maven'
       jdk-versions: '["11", "17", "21"]'
@@ -217,7 +217,7 @@ on:
 
 jobs:
   matrix-test:
-    uses: nigeland/reusable-workflows/.github/workflows/multi-jdk-matrix.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/multi-jdk-matrix.yml@v1
     with:
       build-tool: 'gradle'
       jdk-versions: '["8", "11", "17", "21", "22"]'
@@ -240,7 +240,7 @@ on:
 jobs:
   # Stage 1: Build
   build:
-    uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@v1
     with:
       java-version: '17'
       maven-args: '-B package'
@@ -250,14 +250,14 @@ jobs:
   # Stage 2: Test
   test:
     needs: build
-    uses: nigeland/reusable-workflows/.github/workflows/maven-test-report.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-test-report.yml@v1
     with:
       java-version: '17'
       
   # Stage 3: Code Quality
   quality:
     needs: build
-    uses: nigeland/reusable-workflows/.github/workflows/code-quality.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/code-quality.yml@v1
     with:
       java-version: '17'
       build-tool: 'maven'
@@ -266,7 +266,7 @@ jobs:
   # Stage 4: Security Scan
   security:
     needs: build
-    uses: nigeland/reusable-workflows/.github/workflows/security-scan.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/security-scan.yml@v1
     with:
       java-version: '17'
       build-tool: 'maven'
@@ -275,7 +275,7 @@ jobs:
   # Stage 5: Multi-Version Compatibility Test
   compatibility:
     needs: [test, quality, security]
-    uses: nigeland/reusable-workflows/.github/workflows/multi-jdk-matrix.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/multi-jdk-matrix.yml@v1
     with:
       build-tool: 'maven'
       jdk-versions: '["11", "17", "21"]'
@@ -293,7 +293,7 @@ on:
 jobs:
   # Build and test
   build-and-test:
-    uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@v1
     with:
       java-version: '17'
       maven-args: '-B clean verify'
@@ -302,7 +302,7 @@ jobs:
   # Security check
   security-check:
     needs: build-and-test
-    uses: nigeland/reusable-workflows/.github/workflows/security-scan.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/security-scan.yml@v1
     with:
       java-version: '17'
       build-tool: 'maven'
@@ -311,7 +311,7 @@ jobs:
   # Publish to GitHub Packages
   publish:
     needs: [build-and-test, security-check]
-    uses: nigeland/reusable-workflows/.github/workflows/maven-publish-jdk17.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-publish-jdk17.yml@v1
 ```
 
 ## Jenkins Plugin Project Example
@@ -328,13 +328,13 @@ on:
 
 jobs:
   build-jdk11:
-    uses: nigeland/reusable-workflows/.github/workflows/maven-hpi-jdk11.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-hpi-jdk11.yml@v1
     
   build-jdk17:
-    uses: nigeland/reusable-workflows/.github/workflows/maven-hpi-jdk17.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-hpi-jdk17.yml@v1
     
   build-jdk21:
-    uses: nigeland/reusable-workflows/.github/workflows/maven-hpi-jdk21.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-hpi-jdk21.yml@v1
 ```
 
 ## Dependabot Auto-Merge
@@ -350,7 +350,7 @@ on: pull_request
 
 jobs:
   auto-merge:
-    uses: nigeland/reusable-workflows/.github/workflows/dependabot-auto-merge.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/dependabot-auto-merge.yml@v1
 ```
 
 ## Best Practices
@@ -359,12 +359,12 @@ jobs:
 
 ❌ Not recommended:
 ```yaml
-uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@main
+uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@main
 ```
 
 ✅ Recommended:
 ```yaml
-uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
+uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
 ```
 
 ### 2. Use Different Configurations for Different Environments
@@ -373,13 +373,13 @@ uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
 jobs:
   build-dev:
     if: github.ref != 'refs/heads/main'
-    uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@v1
     with:
       maven-args: '-B package -DskipTests'
       
   build-prod:
     if: github.ref == 'refs/heads/main'
-    uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@v1
     with:
       maven-args: '-B clean verify'
       run-tests: true
@@ -391,13 +391,13 @@ jobs:
 jobs:
   # Execute multiple independent tasks in parallel
   build:
-    uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@v1
     
   security:
-    uses: nigeland/reusable-workflows/.github/workflows/security-scan.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/security-scan.yml@v1
     
   quality:
-    uses: nigeland/reusable-workflows/.github/workflows/code-quality.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/code-quality.yml@v1
 ```
 
 ### 4. Conditional Workflow Execution
@@ -407,7 +407,7 @@ jobs:
   security-scan:
     # Only run security scan on PRs and main branch
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
-    uses: nigeland/reusable-workflows/.github/workflows/security-scan.yml@v1
+    uses: ahunigel/reusable-workflows/.github/workflows/security-scan.yml@v1
 ```
 
 ## Troubleshooting

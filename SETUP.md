@@ -72,7 +72,7 @@ git push origin v2
 
 **Option 1: Major Version (Recommended)**
 ```yaml
-uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
+uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@v1
 ```
 ✅ Automatically gets bug fixes and patches
 ✅ Stays within the same major version
@@ -80,7 +80,7 @@ uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
 
 **Option 2: Exact Version**
 ```yaml
-uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
+uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
 ```
 ✅ Maximum stability (never changes)
 ✅ Predictable behavior
@@ -88,7 +88,7 @@ uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1.0.0
 
 **Option 3: Main Branch (Not Recommended)**
 ```yaml
-uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@main
+uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@main
 ```
 ❌ Can break without warning
 ❌ Not suitable for production
@@ -137,7 +137,7 @@ After creating tags, users need to reference them correctly:
 uses: reusable-workflows/.github/workflows/maven-build.yml@v1
 
 # Correct
-uses: nigeland/reusable-workflows/.github/workflows/maven-build.yml@v1
+uses: ahunigel/reusable-workflows/.github/workflows/maven-build.yml@v1
 ```
 
 ## Summary
