@@ -57,7 +57,7 @@ jobs:
     # Gradle build
     - name: Setup Gradle
       if: inputs.build-tool == 'gradle'
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v5
       
     - name: Build with Gradle
       if: inputs.build-tool == 'gradle'
