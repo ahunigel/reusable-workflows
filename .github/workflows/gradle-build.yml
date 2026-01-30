@@ -67,18 +67,23 @@ jobs:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
         
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        dependency-graph: ${{ inputs.generate-dependency-graph && 'generate-and-submit' || 'disabled' }}
+      
     - name: Set gradlew executable
       run: chmod +x gradlew
       working-directory: ${{ inputs.working-directory }}
       
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@v3
-      with:
-        arguments: |
-          ${{ inputs.gradle-tasks }}
-          ${{ inputs.run-tests == false && '-x test' || '' }}
-        build-root-directory: ${{ inputs.working-directory }}
-        dependency-graph: ${{ inputs.generate-dependency-graph && 'generate-and-submit' || 'disabled' }}
+      run: |
+        if [ "${{ inputs.run-tests }}" = "false" ]; then
+          ./gradlew ${{ inputs.gradle-tasks }} -x test
+        else
+          ./gradlew ${{ inputs.gradle-tasks }}
+        fi
+      working-directory: ${{ inputs.working-directory }}
         
     - name: Upload build artifacts
       if: inputs.upload-artifact

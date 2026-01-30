@@ -55,12 +55,16 @@ jobs:
       working-directory: ${{ inputs.working-directory }}
       
     # Gradle build
+    - name: Setup Gradle
+      if: inputs.build-tool == 'gradle'
+      uses: gradle/actions/setup-gradle@v4
+      
     - name: Build with Gradle
       if: inputs.build-tool == 'gradle'
-      uses: gradle/gradle-build-action@v3
-      with:
-        arguments: clean build
-        build-root-directory: ${{ inputs.working-directory }}
+      run: |
+        chmod +x gradlew
+        ./gradlew clean build
+      working-directory: ${{ inputs.working-directory }}
         
     - name: Upload test results
       if: always()
